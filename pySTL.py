@@ -221,5 +221,14 @@ class STLmodel:
         self.centroid = None
         self.volume = None
 
+    def scale(self, scale):
+        for tri in self.triangles:
+            for point in tri.vertices:
+                point[0] = scale*point[0]
+                point[1] = scale*point[1]
+                point[2] = scale*point[2]
+
+        self.volume = None
+        self.centroid = None
 
 
