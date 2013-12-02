@@ -1,32 +1,33 @@
 import struct
-from numpy import array
 import numpy as np
+from math import cos
+from math import sin
 
-#class for a 3d point
-class point:
+#3 Utility methods to calculate rotation matrices.
+def rotationAboutX(phi):
+    R = np.array([[1, 0, 0],[0, cos(phi), sin(phi)],[0, -sin(phi), cos(phi)]])
+    return R
 
-    def __init__(self,x,y,z):
-        self.x = x
-        self.y = y
-        self.z = z
-    
-    @classmethod
-    def fromTuple(self,p):
-        return point(p[0], p[1], p[2])
-      
+def rotationAboutY(phi):
+    R = np.array([[cos(phi), 0, -sin(phi)],[0, 1, 0],[sin(phi), 0, cos(phi)]])
+    return R
 
-#class for a 3d face on a model
+def rotationAboutZ(phi):
+    R = np.array([[cos(phi), sin(phi), 0],[-sin(phi), cos(phi), 0],[0, 0, 1]])
+    return R
+
+#3d face on a model
 class triangle:
     
     def __init__(self,p1,p2,p3,n=None):
         #3 points of the triangle
-        self.vertices=array(p1),array(p2),array(p3)
+        self.vertices=np.array(p1),np.array(p2),np.array(p3)
       
         #triangles normal
         if n != None:
             self.normal= n
         else:
-            self.normal = array(self.calculate_normal(self.vertices[0],self.vertices[1],self.vertices[2]))
+            self.normal = np.array(self.calculate_normal(self.vertices[0],self.vertices[1],self.vertices[2]))
   
     def calculate_normal(self,p1,p2,p3):
         p12 = p2-p1
@@ -35,8 +36,9 @@ class triangle:
         return np.cross(p12,p23)    
   
 
-class STLmodel:
 
+
+class STLmodel:
 
     def __init__(self,filename):
         self.filename = filename
@@ -86,7 +88,7 @@ class STLmodel:
         xCentroid = xCenter/totalVolume
         yCentroid = yCenter/totalVolume
         zCentroid = zCenter/totalVolume
-        self.centroid = array([xCentroid,yCentroid,zCentroid])
+        self.centroid = np.array([xCentroid,yCentroid,zCentroid])
 
 
 
@@ -177,7 +179,7 @@ class STLmodel:
         fp.close()
     
     def write_text_stl(self, filename):
-        print "WRITE"
+        print "Writing STL to: " + filename
 
         try:
             f = open(filename, 'wb')
@@ -193,7 +195,7 @@ class STLmodel:
             f.write('endsolid {:s}\n'.format(self.name))
             f.close()
         except IOError:
-            print "Couldn't write..."
+            print "Couldn't complete write. IOError encountered."
 
 
 
@@ -211,7 +213,11 @@ class STLmodel:
     def rotate(self, R):
         for tri in self.triangles:
             for point in tri.vertices:
-                point = R*point
+                rotatedPoint = R.dot(point)
+                point[0] = rotatedPoint[0]
+                point[1] = rotatedPoint[1]
+                point[2] = rotatedPoint[2]
+
         self.centroid = None
         self.volume = None
 
