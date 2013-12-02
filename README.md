@@ -21,7 +21,7 @@ The basic workflow goes like this:
 
 To import a file, create a new pySTL STLmodel object.  The constructor takes one argument, the filename to import.  
 
-```
+```python
 import pySTL
 
 #Load a model from a file.
@@ -33,7 +33,7 @@ model = pySTL.STLmodel('text.stl')
 Manipulate through, translation, scaling, and rotation.  Use 3-D rotation matrices to rotate the model.  
 
 To translate, pass a 3 element NumPy array to the translate method of the model. 
-```
+```python
 import numpy
 #Move ten units in the X direction.
 movement = numpy.array([10, 0, 0])
@@ -42,7 +42,7 @@ model.translate(movement)
 
 To scale, pass the scale value to the scale method. 
 
-```
+```python
 #Scale down to 10% size
 scale = 0.1
 model.scale(scale)
@@ -50,7 +50,7 @@ model.scale(scale)
 
 To rotate, create a [3-D rotation matrix](http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations) as a 3*3 numpy array and pass to the model's rotate method.  There are three convenience methods to allow for easy calculation of rotations about the X,Y, and Z axes (give angles in radians).  You can combine these to develop any rotation matrix necessary (e.g. from [Euler Angles](http://en.wikipedia.org/wiki/Euler_angles#Proper_Euler_angles)). 
 
-```
+```python
 #Rotate the model
 R1 = pySTL.rotationAboutX(-3.14149/2)
 R2 = pySTL.rotationAboutY(-3.14159/4)
@@ -62,13 +62,13 @@ model.rotate(R)
 
 You can also get the centroid and volume of the model.  
 
-```
+```python
 c = model.get_centroid()
 v = model.get_volume()
 ```
 
 And finally, export the model back to a new (or the same) .STL file. 
-```
+```python
 model.write_text_stl('newText.stl')
 ```
 
