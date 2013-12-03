@@ -111,8 +111,6 @@ class STLmodel:
     #read text stl match keywords to grab the points to build the model
     def load_text_stl(self):
         fp=open(self.filename,'r')
-        #import pdb
-        #pdb.set_trace()
         for line in fp:
             words=line.split()
             if len(words)>0:
@@ -183,8 +181,6 @@ class STLmodel:
 
         try:
             f = open(filename, 'wb')
-            import pdb
-            pdb.set_trace()
             try:
                 f.write('solid {:s}\n'.format(self.name))
             except AttributeError:
