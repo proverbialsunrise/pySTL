@@ -183,7 +183,13 @@ class STLmodel:
 
         try:
             f = open(filename, 'wb')
-            f.write('solid {:s}\n'.format(self.name))
+            import pdb
+            pdb.set_trace()
+            try:
+                f.write('solid {:s}\n'.format(self.name))
+            except AttributeError:
+                f.write('solid {:s}\n'.format('polyhedron'))
+
             for facet in self.triangles:
                 normal = facet.normal
                 f.write('  facet normal {0:.6E} {1:.6E} {2:.6E}\n'.format(normal[0], normal[1], normal[2]))
@@ -192,7 +198,12 @@ class STLmodel:
                     f.write('      vertex {0:.6E} {1:.6E} {2:.6E}\n'.format(point[0], point[1], point[2]))
                 f.write('    endloop\n')
                 f.write('  endfacet\n')
-            f.write('endsolid {:s}\n'.format(self.name))
+            
+            try:
+                f.write('endsolid {:s}\n'.format(self.name))
+            except AttributeError:
+                f.write('endsolid {:s}\n'.format('polyhedron'))
+
             f.close()
         except IOError:
             print "Couldn't complete write. IOError encountered."
