@@ -102,14 +102,25 @@ class STLmodel:
             fp.close()
 
             if type=='solid':
-                print "reading text file "+str(self.filename)
                 self.load_text_stl()
+                #Many Binary Files also start with 'solid' unfortunately. 
+                #if we don't have any triangles after attempting an ascii read
+                #let's try a binary read and see if that works
+                if len(self.triangles) < 1:
+                    print 'ASCII load did not find any triangles.  Your binary .STL file probably starts with "solid". Trying a binary read instead' 
+                    self.load_binary_stl()
+            
             else:
-                print "reading binary stl file "+str(self.filename,)
                 self.load_binary_stl()
+
+        #If we don't have any triangles.  Something went wrong. 
+        if len(self.triangles) < 1:
+            print "No triangles found for file.  This may not be a .stl file."
+           
   
     #read text stl match keywords to grab the points to build the model
     def load_text_stl(self):
+        print "Attempting to read ASCII STL: "+str(self.filename)
         fp=open(self.filename,'r')
         for line in fp:
             words=line.split()
@@ -134,11 +145,11 @@ class STLmodel:
                     if len(vertices)==3:
                         self.triangles.append(triangle(vertices[0],vertices[1],vertices[2],normal))
         fp.close()
-        print "Loaded STL. " + self.name
 
     #load binary stl file check wikipedia for the binary layout of the file
     #we use the struct library to read in and convert binary data into a format we can use
     def load_binary_stl(self):
+        print "Attempting to read binary STL: "+str(self.filename,)
         fp=open(self.filename,'rb')
         h=fp.read(80)
 
